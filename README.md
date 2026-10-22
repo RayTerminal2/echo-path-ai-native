@@ -12,7 +12,7 @@ npm run dev
 
 在浏览器打开 <http://127.0.0.1:5173/>。
 
-也可以直接双击 `index.html`：当前版本保留 V0.2 原版单文件实现（重构后可能需要本地服务器）。
+DEV-001 已将规则与关卡数据拆分，必须通过本地 HTTP 服务运行，不能直接双击 `index.html`。原版单文件保留于 `legacy/echo-v0.2-original.html`。
 
 ## 测试
 
@@ -20,17 +20,20 @@ npm run dev
 npm test
 ```
 
-当前仅为**冻结基线数据/参考路线检查**，并未单测 HTML 内的游戏规则实现。Codex 在 DEV-001 中会补充独立规则单测和真实游戏回归测试。
+包含 3 项冻结基线校验和 14 项实际规则模块测试，覆盖边界、旧箭头、收集、胜利、撤销、重开及九关参考路径。规则测试通过不代表玩家体验已验证。
 
 如已安装 Python Playwright 和浏览器，可执行 `python tests/browser_regression.py`，实际回放九关并检查桌面/手机视口。
 
 ## 目录
 
-- `index.html`：V0.2 未改动的可运行游戏基线。
+- `index.html`：保留 V0.2 布局、样式与文案，加载原生 ES 模块。
+- `src/game-engine.mjs`：纯规则状态转换；非法移动返回原状态，合法移动创建新状态。
+- `src/render.mjs`：DOM 渲染。
+- `src/app.mjs`：UI 事件、撤销历史、会话统计和记录导出。
 - `legacy/echo-v0.2-original.html`：冻结的原版，重构后用于对比。
-- `data/levels.v0.2.json`：9关快照数据，预备成为重构后唯一数据源。
+- `data/levels.v0.2.json`：当前游戏唯一的关卡数据源，九关内容及顺序冻结。
 - `tests/fixtures/verified-paths.v0.2.json`：九条经旧版求解器计算的参考路线。
-- `tests/baseline.test.mjs`：当前基线检查；不代表产品验收完成。
+- `tests/baseline.test.mjs`：冻结基线检查；`tests/game-engine.test.mjs` 测试实际规则模块。
 - `docs/DEV-001.md`：发给 Codex 的第一张正式任务单。
 - `docs/DECISIONS.md`：真实反馈与产品决策。
 - `docs/TEST_PLAN.md`：测试层次与证据边界。
@@ -47,3 +50,7 @@ Codex：开发、自动测试、修复，建议在独立分支并通过 PR 交�
 ## 冻结基线的浏览器回放（可选）
 
 如果已安装 Python Playwright 和 Chromium，可运行 `python tests/browser_baseline.py`。它通过单文件内容加载验证旧版，不代表重构版本已通过浏览器验收。
+
+## DEV-001 验证记录
+
+验证环境、命令输出和测试盲区见 [开发报告](docs/DEV-001-REPORT.md)。重开清零当前棋盘、步数及撤销历史，累计试玩统计继续保留，与 V0.2 原版一致。复制记录及其复制失败后的下载回退保持原行为。
