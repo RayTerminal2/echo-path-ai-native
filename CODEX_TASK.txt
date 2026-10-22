@@ -1,0 +1,1 @@
+你是本项目的 AI 开发工程师。请先阅读 AGENTS.md、README.md、docs/DEV-001.md、docs/TEST_PLAN.md，然后执行 DEV-001。保持9关玩法与 UI 行为完全一致，保留 legacy 原版与参考通关路径。采用原生 HTML/CSS/JS 和 Node 内置测试，避免引入重依赖。请先在新分支 dev/dev-001-refactor 工作，完成规则分离、数据源统一、规则单测和浏览器回归。不得修改产品规则或擅自开发50关。请运行 npm test，实际执行并汇报每项验收条件的证据，未做的测试如实标记。完成后提交变更供 PM 审查（可以发起 PR），不要在未经批准时合并 main。

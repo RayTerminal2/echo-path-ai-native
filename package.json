@@ -1,0 +1,11 @@
+{
+  "name": "echo-path-ai-native",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Direction Echo gameplay research and Codex engineering handoff",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}

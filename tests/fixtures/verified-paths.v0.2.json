@@ -1,0 +1,202 @@
+[
+  {
+    "level": 1,
+    "directions": [
+      2,
+      2,
+      1,
+      1,
+      2
+    ],
+    "expectedSteps": 5,
+    "usesReplay": false
+  },
+  {
+    "level": 2,
+    "directions": [
+      1,
+      2,
+      2,
+      3,
+      0,
+      3,
+      0,
+      1,
+      1,
+      2,
+      2
+    ],
+    "expectedSteps": 11,
+    "usesReplay": true
+  },
+  {
+    "level": 3,
+    "directions": [
+      2,
+      3,
+      3,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+      2,
+      2,
+      3,
+      2,
+      3,
+      3,
+      0
+    ],
+    "expectedSteps": 16,
+    "usesReplay": true
+  },
+  {
+    "level": 4,
+    "directions": [
+      3,
+      3,
+      2,
+      2,
+      1,
+      1,
+      2,
+      1,
+      1,
+      0,
+      0,
+      3,
+      3,
+      2
+    ],
+    "expectedSteps": 14,
+    "usesReplay": true
+  },
+  {
+    "level": 5,
+    "directions": [
+      3,
+      3,
+      2,
+      3,
+      2,
+      2,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      2
+    ],
+    "expectedSteps": 13,
+    "usesReplay": false
+  },
+  {
+    "level": 6,
+    "directions": [
+      2,
+      1,
+      2,
+      3,
+      3,
+      3,
+      3,
+      0,
+      0,
+      1,
+      1,
+      1,
+      2,
+      1,
+      2,
+      3,
+      3
+    ],
+    "expectedSteps": 17,
+    "usesReplay": true
+  },
+  {
+    "level": 7,
+    "directions": [
+      3,
+      3,
+      2,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      3,
+      3,
+      0,
+      3,
+      3,
+      3,
+      0,
+      0
+    ],
+    "expectedSteps": 19,
+    "usesReplay": false
+  },
+  {
+    "level": 8,
+    "directions": [
+      0,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      3,
+      2,
+      3,
+      3,
+      0,
+      3,
+      3,
+      0,
+      1,
+      1,
+      1,
+      0
+    ],
+    "expectedSteps": 19,
+    "usesReplay": false
+  },
+  {
+    "level": 9,
+    "directions": [
+      3,
+      3,
+      2,
+      2,
+      1,
+      2,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      2,
+      3,
+      2,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    "expectedSteps": 23,
+    "usesReplay": false
+  }
+]
