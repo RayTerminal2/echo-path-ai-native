@@ -82,5 +82,33 @@
     ],
     "optimal": 12,
     "verifiedReplay": true
+  },
+  {
+    "code": "E1",
+    "name": "诱人的近路",
+    "tag": "实验 E1 · 新增策略验证关卡",
+    "rows": [
+      "S.★..",
+      "#...★",
+      "..★#.",
+      "####.",
+      "####E"
+    ],
+    "optimal": 12,
+    "verifiedReplay": true
+  },
+  {
+    "code": "E2",
+    "name": "取舍的时机",
+    "tag": "实验 E2 · 新增策略验证关卡",
+    "rows": [
+      "S.#.★",
+      ".....",
+      "★..#.",
+      ".#...",
+      "#.★★E"
+    ],
+    "optimal": 16,
+    "verifiedReplay": true
   }
 ]

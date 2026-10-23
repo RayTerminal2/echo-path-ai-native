@@ -169,6 +169,51 @@
 
 ---
 
+## DEV-005-B｜E1/E2 核心玩法验证原型
+
+- **日期**：2026-10-23
+- **分支**：`dev/dev-002-gameplay-experiment`（未提交）
+- **基线**：`25f686e DEV-004: close arrow visibility fix and B1/B1+ audit`；开工前工作树干净。
+- **需求目标**：按 DEV-005-P 已评审地图实现 E1「诱人的近路」、E2「取舍的时机」，接入实验模式并提供规则与浏览器验证，不修改核心规则。
+- **使用模型**：`learnings_campus/deepseek-v4.1-flash`（OpenCode）
+- **实现概要**：
+  1. `data/levels.experimental.json` 追加 E1/E2，实验模式扩展为 8 关；既有 A–C、B1/B2/B1+ 数据未改。
+  2. `tests/fixtures/verified-paths.experimental.json` 追加 E1 12 步、E2 16 步参考路线。
+  3. `tests/experiment-analysis.mjs` 新增 `solveFrom`，支持从任意真实引擎状态继续求解，并可仅移除历史箭头限制。
+  4. `tests/experiment.test.mjs` 扩展为 8 关校验，新增 E1 近星陷阱、E2 错误路口、E2 重新进入旧箭头格但必须遵守离开方向的测试。
+  5. `src/app.mjs` 更新实验模式文案为八关；`index.html` 实验关卡按钮网格由 6 列改为 8 列；不展示正确路线或关键决策提示。
+  6. 保留箭头角标、撤销、重开、切关与试玩记录功能。
+- **修改文件（DEV-005-B 增量）**：
+  - `data/levels.experimental.json`
+  - `tests/fixtures/verified-paths.experimental.json`
+  - `tests/experiment-analysis.mjs`
+  - `tests/experiment.test.mjs`
+  - `src/app.mjs`
+  - `index.html`
+  - `README.md`
+  - `docs/DEV-005-B-REPORT.md`（新建）
+  - `docs/development-log.md`（本记录）
+- **验证结果**：
+  - 已执行 `npm test`：**28 项通过，0 失败**；原 25 项无退化，新增 3 项 E1/E2 规则测试。
+  - 已用临时 headless Chrome CDP 脚本验证 8 关加载、E1 12 步通关、E2 16 步通关、撤销/重开/切关、键盘与屏幕按钮、E2 当前格箭头角标、320/390/768/1100 布局，以及原九关 9 条参考路线回放；无页面/控制台错误。
+  - 320/390/768/1100 均无横向溢出；格子最大宽高差 0.015625 CSS px；实验关卡按钮为 8 个同排显示，320px 下最小宽度约 30px。
+  - **未运行** `python tests/browser_regression.py`：当前 Python 环境未安装 Playwright；临时 CDP 脚本未加入仓库。
+  - 已记录 PT-005 单次真实体验：E1 有趣、有策略感；E2 有思考但整体乐趣一般，首次 20 步通关后因 16 步目标产生优化欲望；玩家认为整体仍不够好。详见 `docs/playtest-log.md`。
+- **DEV-005-CLOSE 收尾（2026-10-23）**：
+  - 新增/更新 `docs/playtest-log.md`（PT-005）、`docs/DECISIONS.md`（2026-10-23 产品决策）、`docs/DEV-005-B-REPORT.md`（第 7 节）、`docs/development-log.md`（本记录）。
+  - 产品决策：DEV-005 工程实验完成，但玩法尚未充分证明可持续产生高质量解谜体验；保留历史方向箭头规则，优先吸收 B1、E1 的收集顺序策略，保留最短步数挑战；不再无期限进行小规模机制探索；先开发至少 50 关、具有合理难度递进的完整 H5 参赛候选作品。不得宣称已通过完整用户体验验证。
+  - 已执行 `npm test`：**28 项通过，0 失败**；`git diff --check` 通过。
+  - 未执行 Push、Merge、Force Push；本次仅执行一次本地归档 Commit。
+- **遗留问题**：
+  - PT-005 为单人单次体验；E2 的整体乐趣一般，当前玩法尚未充分证明可持续产生高质量解谜体验。
+  - E1 若玩家首次直接向下，可能绕过近星陷阱；近星显眼程度需人工确认。
+  - E2 存在 `(1,4)` 等额外箭头陷阱，可能掩盖 `(3,3)` 的目标决策；后续关卡设计需借鉴并验证。
+  - 8 个实验按钮在 320px 下较窄，视觉可读性与点击手感需人工验收；UI 人工验收尚未确认。
+  - 布局验证仅覆盖 headless Chrome，未覆盖真实手机、iOS Safari、Firefox 或系统缩放。
+- **Commit ID**：待补充（本次归档 Commit 生成后见 Git 日志）。
+
+---
+
 ## 历史记录占位
 
 - DEV-001：任务单存在（`docs/DEV-001.md`），截至本记录标记为待核实；完成情况**待补充**。

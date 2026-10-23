@@ -29,6 +29,27 @@ export function solveFirst(def, {maxStates = 1_000_000} = {}) {
   return {won: false, states: seen.size};
 }
 
+export function solveFrom(state, {maxStates = 1_000_000, ignoreStamps = false} = {}) {
+  const start = ignoreStamps ? {...state, stamps: {}} : state;
+  const queue = [{state: start, path: [start.pos]}];
+  const seen = new Set([stateKey(start) + (ignoreStamps ? '|nostamp' : '')]);
+  for (let head = 0; head < queue.length; head++) {
+    const {state: current, path} = queue[head];
+    if (current.won) return {won: true, state: current, path, states: seen.size};
+    for (let d = 0; d < 4; d++) {
+      let next = move(current, d);
+      if (next === current) continue;
+      if (ignoreStamps) next = {...next, stamps: {}};
+      const key = stateKey(next) + (ignoreStamps ? '|nostamp' : '');
+      if (seen.has(key)) continue;
+      seen.add(key);
+      queue.push({state: next, path: [...path, next.pos]});
+      if (seen.size > maxStates) return {won: false, aborted: true, states: seen.size};
+    }
+  }
+  return {won: false, states: seen.size};
+}
+
 export function simplePathExists(def, {maxStates = 1_000_000} = {}) {
   const start = initial(def);
   const queue = [{state: start, path: [start.pos], visited: 1 << start.pos}];

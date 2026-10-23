@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {initial, move, parse, restart, undo} from '../src/game-engine.mjs';
-import {analyzeWins, findHistoryEffect, orderSolvable, pathMetrics, permutations, simplePathExists, solveFirst} from './experiment-analysis.mjs';
+import {analyzeWins, findHistoryEffect, orderSolvable, pathMetrics, permutations, simplePathExists, solveFirst, solveFrom} from './experiment-analysis.mjs';
 
 const load = (path) => JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'));
 const levels = load('../data/levels.experimental.json');
@@ -21,9 +21,9 @@ function replay(def, directions) {
   return {state, history};
 }
 
-test('experimental data contains six compact, valid levels', () => {
-  assert.equal(levels.length, 6);
-  assert.deepEqual(levels.map((level) => level.code), ['A', 'B', 'C', 'B1', 'B2', 'B1+']);
+test('experimental data contains eight compact, valid levels', () => {
+  assert.equal(levels.length, 8);
+  assert.deepEqual(levels.map((level) => level.code), ['A', 'B', 'C', 'B1', 'B2', 'B1+', 'E1', 'E2']);
   assert.equal(fixtures.length, levels.length);
   for (const [index, level] of levels.entries()) {
     assert.ok(level.rows.length >= 5 && level.rows.length <= 7);
@@ -39,7 +39,7 @@ test('experimental data contains six compact, valid levels', () => {
   }
 });
 
-test('all six reference routes win on the actual game engine and support undo/restart', () => {
+test('all eight reference routes win on the actual game engine and support undo/restart', () => {
   for (const [index, fixture] of fixtures.entries()) {
     const level = levels[index];
     const {state, history} = replay(level, fixture.directions);
@@ -162,4 +162,80 @@ test('B1+: two good first moves still require a correct second decision', () => 
   assert.equal(effect.got.length, 0);
   assert.ok(effect.variants.some((variant) => variant.winnable === true));
   assert.ok(effect.variants.some((variant) => variant.winnable === false));
+});
+
+test('E1: taking the nearest gem first is an irrecoverable arrow trap', () => {
+  const level = levels[6];
+  const board = parse(level);
+  const manhattan = (pos) => Math.abs(Math.floor(pos / board.W) - Math.floor(board.start / board.W)) + Math.abs(pos % board.W - board.start % board.W);
+  const nearest = board.gems.reduce((best, gem) => manhattan(gem) < manhattan(best) ? gem : best);
+  assert.equal(nearest, 2);
+
+  let state = initial(level);
+  for (const direction of [1, 1]) state = move(state, direction);
+  assert.equal(state.pos, nearest);
+  assert.equal(state.got.length, 1);
+
+  const withArrows = solveFrom(state, {maxStates: 500_000});
+  assert.equal(withArrows.aborted, undefined);
+  assert.equal(withArrows.won, false, 'E1 near-gem-first prefix unexpectedly wins with arrows');
+
+  const withoutArrows = solveFrom(state, {maxStates: 500_000, ignoreStamps: true});
+  assert.equal(withoutArrows.aborted, undefined);
+  assert.equal(withoutArrows.won, true, 'E1 near-gem-first prefix should be solvable without arrow stamps');
+
+  let trapped = initial(level);
+  for (const direction of [1, 1, 2, 2]) trapped = move(trapped, direction);
+  assert.equal(trapped.pos, 12);
+  const reentered = move(trapped, 0);
+  assert.notEqual(reentered, trapped);
+  assert.equal(move(reentered, 1), reentered, 'E1 should block the east exit through the stamped cell');
+});
+
+test('E2: the wrong lower-star order is winnable only without arrow stamps', () => {
+  const level = levels[7];
+  const decision = [2, 2, 1, 0, 1, 1, 0, 1, 2, 2, 2, 3];
+  let state = initial(level);
+  for (const direction of decision) state = move(state, direction);
+  assert.equal(state.pos, 18);
+  assert.equal(state.got.length, 2);
+
+  const correct = move(state, 3);
+  assert.notEqual(correct, state);
+  assert.equal(solveFrom(correct, {maxStates: 500_000}).won, true);
+
+  const wrong = move(state, 2);
+  assert.notEqual(wrong, state);
+  assert.equal(wrong.pos, 23);
+  assert.equal(wrong.got.length, 3);
+  const wrongWithArrows = solveFrom(wrong, {maxStates: 500_000});
+  assert.equal(wrongWithArrows.aborted, undefined);
+  assert.equal(wrongWithArrows.won, false, 'E2 wrong decision unexpectedly wins with arrows');
+  const wrongWithoutArrows = solveFrom(wrong, {maxStates: 500_000, ignoreStamps: true});
+  assert.equal(wrongWithoutArrows.aborted, undefined);
+  assert.equal(wrongWithoutArrows.won, true, 'E2 wrong decision should be solvable without arrow stamps');
+
+  const allGemsWrong = move(wrong, 3);
+  assert.equal(allGemsWrong.pos, 22);
+  assert.equal(allGemsWrong.got.length, 4);
+  assert.equal(solveFrom(allGemsWrong, {maxStates: 500_000}).won, false);
+  assert.equal(solveFrom(allGemsWrong, {maxStates: 500_000, ignoreStamps: true}).won, true);
+});
+
+test('E2 arrow rule: re-entry is allowed, but departure must follow the stored direction', () => {
+  const level = levels[7];
+  let state = initial(level);
+  for (const direction of [2, 2, 1, 0, 1, 1, 0, 1, 2, 2, 2, 3, 2, 3]) state = move(state, direction);
+  assert.equal(state.pos, 22);
+  assert.equal(state.stamps[23], 3);
+  assert.equal(state.got.length, 4);
+
+  const reentered = move(state, 1);
+  assert.notEqual(reentered, state, 're-entering a stamped cell must be legal');
+  assert.equal(reentered.pos, 23);
+  assert.equal(reentered.stamps[23], 3);
+  assert.equal(move(reentered, 1), reentered, 'departure east must be blocked by the stored west arrow');
+  const returned = move(reentered, 3);
+  assert.notEqual(returned, reentered);
+  assert.equal(returned.pos, 22);
 });

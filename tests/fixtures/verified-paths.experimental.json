@@ -34,5 +34,17 @@
     "code": "B1+",
     "expectedSteps": 12,
     "directions": [3, 2, 3, 2, 1, 1, 2, 1, 0, 0, 0, 1]
+  },
+  {
+    "level": 7,
+    "code": "E1",
+    "expectedSteps": 12,
+    "directions": [1, 2, 2, 1, 0, 0, 1, 1, 2, 2, 2, 2]
+  },
+  {
+    "level": 8,
+    "code": "E2",
+    "expectedSteps": 16,
+    "directions": [2, 2, 1, 0, 1, 1, 0, 1, 2, 2, 2, 3, 3, 2, 1, 1]
   }
 ]

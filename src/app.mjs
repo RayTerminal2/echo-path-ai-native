@@ -40,10 +40,10 @@ const modeLink=$('modeLink');
 if(EXPERIMENT){
  document.title='方向回声 · 实验关卡';
  modeLink.textContent='← 返回九关';modeLink.href='./';
- $('intro').textContent='实验模式 · 六关独立实验关卡：旧路重访、顺序陷阱、多路口规划与进阶先远后近。原九关仍保留。';
- $('levelHint').textContent='实验 A–C · B1–B2 · B1+';
- $('testboxNote').textContent='优先体验实验 A–C、B1–B2 与 B1+。重点观察：收集顺序是否真的改变后续路线？关键格子的前期箭头是否影响退路？';
- $('footNote').textContent='六关均有求解器验证的通关路线。通关前不展示参考步数。实验记录与原九关统计分开保存，离开前请复制。';
+ $('intro').textContent='实验模式 · 八关独立实验关卡：旧路重访、顺序陷阱、多路口规划与路线取舍。原九关仍保留。';
+ $('levelHint').textContent='实验 A–C · B1–B2 · B1+ · E1–E2';
+ $('testboxNote').textContent='优先体验实验 A–C、B1–B2、B1+ 与 E1–E2。重点观察：玩家如何规划收集顺序，以及是否会主动尝试不同路线。';
+ $('footNote').textContent='八关均有求解器验证的通关路线。通关前不展示参考步数。实验记录与原九关统计分开保存，离开前请复制。';
 }else{
  modeLink.textContent='实验模式 →';modeLink.href='?mode=experiment';
 }
