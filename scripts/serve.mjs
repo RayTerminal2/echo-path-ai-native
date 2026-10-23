@@ -9,6 +9,8 @@ const assets = new Map([
   ['/src/game-engine.mjs', ['src/game-engine.mjs', 'text/javascript']],
   ['/data/levels.v0.2.json', ['data/levels.v0.2.json', 'application/json']],
   ['/data/levels.experimental.json', ['data/levels.experimental.json', 'application/json']],
+  ['/data/levels.campaign.batch1.json', ['data/levels.campaign.batch1.json', 'application/json']],
+  ['/data/levels.campaign.json', ['data/levels.campaign.json', 'application/json']],
 ]);
 const port = Number(process.env.PORT || 5173);
 const server = http.createServer(async (req, res) => {

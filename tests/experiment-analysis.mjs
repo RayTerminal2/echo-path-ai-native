@@ -15,7 +15,7 @@ export function solveFirst(def, {maxStates = 1_000_000} = {}) {
   const seen = new Set([stateKey(start)]);
   for (let head = 0; head < queue.length; head++) {
     const {state, path} = queue[head];
-    if (state.won) return {won: true, state, path, states: seen.size};
+    if (state.won) return {won: true, state, path, states: seen.size, status: 'solved'};
     for (let d = 0; d < 4; d++) {
       const next = move(state, d);
       if (next === state) continue;
@@ -23,10 +23,10 @@ export function solveFirst(def, {maxStates = 1_000_000} = {}) {
       if (seen.has(key)) continue;
       seen.add(key);
       queue.push({state: next, path: [...path, next.pos]});
-      if (seen.size > maxStates) return {won: false, aborted: true, states: seen.size};
+      if (seen.size > maxStates) return {won: false, aborted: true, states: seen.size, status: 'aborted'};
     }
   }
-  return {won: false, states: seen.size};
+  return {won: false, states: seen.size, status: 'unsolvable'};
 }
 
 export function solveFrom(state, {maxStates = 1_000_000, ignoreStamps = false} = {}) {
@@ -35,7 +35,7 @@ export function solveFrom(state, {maxStates = 1_000_000, ignoreStamps = false} =
   const seen = new Set([stateKey(start) + (ignoreStamps ? '|nostamp' : '')]);
   for (let head = 0; head < queue.length; head++) {
     const {state: current, path} = queue[head];
-    if (current.won) return {won: true, state: current, path, states: seen.size};
+    if (current.won) return {won: true, state: current, path, states: seen.size, status: 'solved'};
     for (let d = 0; d < 4; d++) {
       let next = move(current, d);
       if (next === current) continue;
@@ -44,32 +44,33 @@ export function solveFrom(state, {maxStates = 1_000_000, ignoreStamps = false} =
       if (seen.has(key)) continue;
       seen.add(key);
       queue.push({state: next, path: [...path, next.pos]});
-      if (seen.size > maxStates) return {won: false, aborted: true, states: seen.size};
+      if (seen.size > maxStates) return {won: false, aborted: true, states: seen.size, status: 'aborted'};
     }
   }
-  return {won: false, states: seen.size};
+  return {won: false, states: seen.size, status: 'unsolvable'};
 }
 
 export function simplePathExists(def, {maxStates = 1_000_000} = {}) {
   const start = initial(def);
-  const queue = [{state: start, path: [start.pos], visited: 1 << start.pos}];
+  const queue = [{state: start, path: [start.pos], visited: 1n << BigInt(start.pos)}];
   const seen = new Set([stateKey(start) + '|' + start.pos]);
   for (let head = 0; head < queue.length; head++) {
     const {state, path, visited} = queue[head];
-    if (state.won) return {exists: true, path, states: seen.size};
+    if (state.won) return {exists: true, path, states: seen.size, status: 'solved'};
     for (let d = 0; d < 4; d++) {
       const next = move(state, d);
       if (next === state) continue;
-      if (visited & (1 << next.pos)) continue;
-      const nextVisited = visited | (1 << next.pos);
+      const bit = 1n << BigInt(next.pos);
+      if (visited & bit) continue;
+      const nextVisited = visited | bit;
       const key = stateKey(next) + '|' + nextVisited;
       if (seen.has(key)) continue;
       seen.add(key);
       queue.push({state: next, path: [...path, next.pos], visited: nextVisited});
-      if (seen.size > maxStates) return {exists: false, aborted: true, states: seen.size};
+      if (seen.size > maxStates) return {exists: false, aborted: true, states: seen.size, status: 'aborted'};
     }
   }
-  return {exists: false, states: seen.size};
+  return {exists: false, states: seen.size, status: 'unsolvable'};
 }
 
 export function permutations(items) {
@@ -88,7 +89,7 @@ export function orderSolvable(def, order, {maxStates = 1_000_000} = {}) {
   const seen = new Set([stateKey(start) + '|0']);
   for (let head = 0; head < queue.length; head++) {
     const {state, orderIndex} = queue[head];
-    if (state.won) return {ok: true, states: seen.size};
+    if (state.won) return {ok: true, states: seen.size, status: 'solved'};
     for (let d = 0; d < 4; d++) {
       const next = move(state, d);
       if (next === state) continue;
@@ -102,10 +103,75 @@ export function orderSolvable(def, order, {maxStates = 1_000_000} = {}) {
       if (seen.has(key)) continue;
       seen.add(key);
       queue.push({state: next, orderIndex: nextOrder});
-      if (seen.size > maxStates) return {ok: false, aborted: true, states: seen.size};
+      if (seen.size > maxStates) return {ok: false, aborted: true, states: seen.size, status: 'aborted'};
     }
   }
-  return {ok: false, states: seen.size};
+  return {ok: false, states: seen.size, status: 'unsolvable'};
+}
+
+export function orderShortest(def, order, {maxStates = 1_000_000} = {}) {
+  const start = initial(def);
+  const queue = [{state: start, orderIndex: 0, path: [start.pos]}];
+  const seen = new Set([stateKey(start) + '|0']);
+  for (let head = 0; head < queue.length; head++) {
+    const {state, orderIndex, path} = queue[head];
+    if (state.won) return {ok: true, steps: state.steps, path, states: seen.size, status: 'solved'};
+    for (let d = 0; d < 4; d++) {
+      const next = move(state, d);
+      if (next === state) continue;
+      let nextOrder = orderIndex;
+      if (next.got.length > state.got.length) {
+        const gem = next.got[next.got.length - 1];
+        if (gem !== order[orderIndex]) continue;
+        nextOrder++;
+      }
+      const key = stateKey(next) + '|' + nextOrder;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      queue.push({state: next, orderIndex: nextOrder, path: [...path, next.pos]});
+      if (seen.size > maxStates) return {ok: false, aborted: true, steps: null, states: seen.size, status: 'aborted'};
+    }
+  }
+  return {ok: false, steps: null, states: seen.size, status: 'unsolvable'};
+}
+
+function shortestTo(state, targets, {maxStates = 1_000_000, ignoreStamps = false} = {}) {
+  const queue = [{state, path: []}];
+  const seen = new Set([stateKey(state) + (ignoreStamps ? '|nostamp' : '')]);
+  for (let head = 0; head < queue.length; head++) {
+    const {state: current, path} = queue[head];
+    if (targets.has(current.pos)) return {ok: true, path, state: current, status: 'solved'};
+    for (let d = 0; d < 4; d++) {
+      let next = move(current, d);
+      if (next === current) continue;
+      if (ignoreStamps) next = {...next, stamps: {}};
+      const key = stateKey(next) + (ignoreStamps ? '|nostamp' : '');
+      if (seen.has(key)) continue;
+      seen.add(key);
+      queue.push({state: next, path: [...path, d]});
+      if (seen.size > maxStates) return {ok: false, aborted: true, status: 'aborted'};
+    }
+  }
+  return {ok: false, status: 'unsolvable'};
+}
+
+export function greedy(def, {ignoreStamps = false, maxStates = 1_000_000} = {}) {
+  const board = parse(def);
+  let state = initial(def);
+  for (let guard = 0; guard < board.gems.length + 2; guard++) {
+    if (state.won) return {won: true, steps: state.steps, status: 'solved'};
+    const targets = new Set(board.gems.filter((gem) => !state.got.includes(gem)));
+    if (targets.size === 0) targets.add(board.end);
+    const result = shortestTo(state, targets, {ignoreStamps, maxStates});
+    if (!result.ok) {
+      return {won: false, steps: state.steps, status: result.status, reason: result.status === 'aborted' ? 'aborted' : 'no path'};
+    }
+    for (const direction of result.path) {
+      state = move(state, direction);
+      if (ignoreStamps) state = {...state, stamps: {}};
+    }
+  }
+  return {won: state.won, steps: state.steps, status: state.won ? 'solved' : 'unsolvable'};
 }
 
 export function pathMetrics(def, path) {
@@ -233,7 +299,7 @@ export function analyzeWins(def, {maxStates = 1_000_000} = {}) {
       if (seen.has(key)) continue;
       seen.add(key);
       queue.push({state: next, path: [...path, next.pos]});
-      if (seen.size > maxStates) return {aborted: true, states: seen.size, wins: [], board};
+      if (seen.size > maxStates) return {aborted: true, states: seen.size, wins: [], board, status: 'aborted'};
     }
   }
   const shortest = wins.reduce((best, win) => best === null || win.metrics.steps < best.metrics.steps ? win : best, null);
@@ -242,6 +308,7 @@ export function analyzeWins(def, {maxStates = 1_000_000} = {}) {
     states: seen.size,
     wins,
     shortest,
+    status: wins.length ? 'solved' : 'unsolvable',
     minDistinctJunctions: wins.length ? Math.min(...wins.map((win) => win.metrics.distinctJunctions)) : null,
     minRevisitEntries: wins.length ? Math.min(...wins.map((win) => win.metrics.revisitEntries)) : null,
   };

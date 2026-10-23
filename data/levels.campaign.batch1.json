@@ -1,0 +1,259 @@
+[
+  {
+    "id": "C1-01",
+    "chapter": 1,
+    "chapterName": "基础规则与方向理解",
+    "name": "第一个箭头",
+    "tag": "第1章 · 单目标与第一次移动",
+    "source": "V02-01",
+    "rows": [
+      "S...",
+      ".#..",
+      ".★..",
+      "..E."
+    ],
+    "optimal": 5,
+    "verifiedReplay": true,
+    "strategy": ["基础规则"],
+    "evidence": {
+      "winningOrders": "1/1",
+      "simplePath": true,
+      "greedy": "成功 5 步",
+      "note": "单星教学关：先理解移动、收集与出口，不引入顺序取舍。"
+    }
+  },
+  {
+    "id": "C1-02",
+    "chapter": 1,
+    "chapterName": "基础规则与方向理解",
+    "name": "第二次经过",
+    "tag": "第1章 · 旧格可以进入，但方向不可改",
+    "source": "V02-02",
+    "rows": [
+      "..S★",
+      ".★..",
+      ".#.E",
+      ".#.."
+    ],
+    "optimal": 11,
+    "verifiedReplay": true,
+    "strategy": ["回程/旧路"],
+    "evidence": {
+      "winningOrders": "2/2",
+      "simplePath": false,
+      "greedy": "失败@4",
+      "note": "两个收集顺序都可行；重点不是顺序，而是理解旧格箭头会要求再次经过。"
+    }
+  },
+  {
+    "id": "C2-01",
+    "chapter": 2,
+    "chapterName": "路线与回程规划",
+    "name": "走过的承诺",
+    "tag": "第2章 · 提前安排回程",
+    "source": "V02-03",
+    "rows": [
+      "....",
+      ".#.★",
+      "E.S.",
+      "..★#"
+    ],
+    "optimal": 16,
+    "verifiedReplay": true,
+    "strategy": ["回程/旧路"],
+    "evidence": {
+      "winningOrders": "2/2",
+      "simplePath": false,
+      "greedy": "成功 16 步",
+      "note": "不存在无重复通关路线；玩家必须把回程写进早期方向。"
+    }
+  },
+  {
+    "id": "C2-02",
+    "chapter": 2,
+    "chapterName": "路线与回程规划",
+    "name": "短回程",
+    "tag": "第2章 · 一次回程，不做长环线",
+    "source": "new",
+    "rows": [
+      "...E★",
+      "##..#",
+      ".★.#.",
+      ".#S#.",
+      "....."
+    ],
+    "optimal": 12,
+    "verifiedReplay": true,
+    "strategy": ["回程/旧路", "路线规划"],
+    "evidence": {
+      "winningOrders": "1/2",
+      "simplePath": false,
+      "greedy": "失败@2",
+      "greedyWithoutStamps": "成功 8 步",
+      "revisitEntries": 1,
+      "historyEffect": "收集 (2,1) 的星后，(2,2) 的箭头安排会决定能否回到出口。",
+      "note": "只有一次回访；自然贪心在第 2 步后被困。去掉箭头限制后同一贪心可通关，说明箭头规则确实在起作用。"
+    }
+  },
+  {
+    "id": "C3-01",
+    "chapter": 3,
+    "chapterName": "收集顺序策略",
+    "name": "先远后近",
+    "tag": "第3章 · 最近的不一定先拿",
+    "source": "EXP-B1",
+    "rows": [
+      ".....",
+      "..S#.",
+      "..★★#",
+      ".★..E",
+      "#.#.."
+    ],
+    "optimal": 8,
+    "verifiedReplay": true,
+    "strategy": ["顺序陷阱"],
+    "evidence": {
+      "winningOrders": "1/6",
+      "simplePath": true,
+      "greedy": "失败@5",
+      "note": "最近星 (2,2) 先拿会失败；唯一可行顺序从更远的 (3,1) 开始。"
+    }
+  },
+  {
+    "id": "C3-02",
+    "chapter": 3,
+    "chapterName": "收集顺序策略",
+    "name": "诱人的近路",
+    "tag": "第3章 · 顺序决定后续可达性",
+    "source": "EXP-E1",
+    "rows": [
+      "S.★..",
+      "#...★",
+      "..★#.",
+      "####.",
+      "####E"
+    ],
+    "optimal": 12,
+    "verifiedReplay": true,
+    "strategy": ["顺序陷阱", "回程/旧路"],
+    "evidence": {
+      "winningOrders": "1/6",
+      "simplePath": true,
+      "greedy": "失败@4",
+      "note": "直接向右拿最近星 (0,2) 的前缀会写入错误箭头；唯一可行顺序先下行拿 (2,2)，再取 (0,2) 与 (1,4)。"
+    }
+  },
+  {
+    "id": "C4-01",
+    "chapter": 4,
+    "chapterName": "多方案取舍与步数优化",
+    "name": "取舍的时机",
+    "tag": "第4章 · 首次通关之后还能更短",
+    "source": "EXP-E2",
+    "rows": [
+      "S.#.★",
+      ".....",
+      "★..#.",
+      ".#...",
+      "#.★★E"
+    ],
+    "optimal": 16,
+    "verifiedReplay": true,
+    "strategy": ["多方案取舍", "步数优化"],
+    "evidence": {
+      "winningOrders": "4/24",
+      "simplePath": true,
+      "greedy": "失败@12",
+      "note": "关键路口 (3,3) 的取舍决定后续；首次通关后存在明确的更短路线。"
+    }
+  },
+  {
+    "id": "C4-02",
+    "chapter": 4,
+    "chapterName": "多方案取舍与步数优化",
+    "name": "两条回程",
+    "tag": "第4章 · 两条可行路线，相差两步",
+    "source": "new",
+    "rows": [
+      ".....",
+      ".E..#",
+      "#★#.★",
+      ".★.#.",
+      "S#..."
+    ],
+    "optimal": 14,
+    "verifiedReplay": true,
+    "strategy": ["多方案取舍", "步数优化", "回程/旧路"],
+    "evidence": {
+      "winningOrders": "2/6",
+      "simplePath": false,
+      "greedy": "成功 16 步",
+      "greedyWithoutStamps": "成功 12 步",
+      "routePlans": [
+        "先取 (3,1)，再绕右侧取 (2,4)，最后回到 (2,1) 并停在出口：14 步。",
+        "先取 (3,1)，再直接取 (2,1) 并经过出口，最后去 (2,4)：16 步。"
+      ],
+      "historyEffect": "收集 (3,1) 的星后，(3,2) 的箭头安排会决定哪条回程可行。",
+      "note": "两条路线都成立，但一条明显更短；自然贪心 16 步，最优 14 步。"
+    }
+  },
+  {
+    "id": "C5-01",
+    "chapter": 5,
+    "chapterName": "综合挑战",
+    "name": "最后一条路",
+    "tag": "第5章 · 五星综合锚点",
+    "source": "V02-09",
+    "rows": [
+      "#..S★..",
+      "#.#....",
+      "..★...E",
+      "##.★#.★",
+      "####★..",
+      "####...",
+      "#######"
+    ],
+    "optimal": 23,
+    "verifiedReplay": true,
+    "strategy": ["顺序陷阱", "多路线规划"],
+    "evidence": {
+      "winningOrders": "4/120",
+      "simplePath": true,
+      "greedy": "失败@7",
+      "note": "5 星长路线锚点；用于检查综合关的阅读成本和疲劳，不作为唯一难度基准。"
+    }
+  },
+  {
+    "id": "C5-02",
+    "chapter": 5,
+    "chapterName": "综合挑战",
+    "name": "双陷阱",
+    "tag": "第5章 · 顺序与历史箭头同时约束",
+    "source": "new",
+    "rows": [
+      "......",
+      "★..#..",
+      "...S.★",
+      ".##.★.",
+      "......",
+      "E#..★."
+    ],
+    "optimal": 20,
+    "verifiedReplay": true,
+    "strategy": ["顺序陷阱", "历史分支", "多路线取舍"],
+    "evidence": {
+      "winningOrders": "4/24",
+      "simplePath": true,
+      "greedy": "失败@14",
+      "greedyWithoutStamps": "成功 18 步",
+      "historyEffect": "收集 (3,4) 的星后，(4,4) 的箭头安排会决定后续能否继续通关。",
+      "historyEvidence": {
+        "cell": [4, 4],
+        "got": [22],
+        "winnableDirections": [1, 2, 2],
+        "blockedDirections": [1, 2, 1, 2, 3]
+      },
+      "note": "两颗最近星中有一颗不能作为第一手；自然贪心在第 14 步后无路。顺序与早期箭头共同构成两个可验证冲突。"
+    }
+  }
+]
