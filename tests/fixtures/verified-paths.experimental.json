@@ -1,0 +1,32 @@
+[
+  {
+    "level": 1,
+    "code": "A",
+    "expectedSteps": 17,
+    "directions": [1, 1, 2, 1, 2, 3, 3, 3, 0, 3, 0, 1, 1, 1, 2, 1, 2]
+  },
+  {
+    "level": 2,
+    "code": "B",
+    "expectedSteps": 13,
+    "directions": [0, 0, 0, 0, 1, 1, 1, 2, 3, 2, 2, 1, 1]
+  },
+  {
+    "level": 3,
+    "code": "C",
+    "expectedSteps": 15,
+    "directions": [2, 3, 0, 0, 3, 3, 0, 0, 1, 1, 2, 2, 3, 3, 0]
+  },
+  {
+    "level": 4,
+    "code": "B1",
+    "expectedSteps": 8,
+    "directions": [3, 2, 2, 1, 0, 1, 2, 1]
+  },
+  {
+    "level": 5,
+    "code": "B2",
+    "expectedSteps": 10,
+    "directions": [0, 1, 1, 0, 3, 3, 3, 3, 2, 2]
+  }
+]

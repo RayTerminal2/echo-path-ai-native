@@ -8,6 +8,7 @@ const assets = new Map([
   ['/src/render.mjs', ['src/render.mjs', 'text/javascript']],
   ['/src/game-engine.mjs', ['src/game-engine.mjs', 'text/javascript']],
   ['/data/levels.v0.2.json', ['data/levels.v0.2.json', 'application/json']],
+  ['/data/levels.experimental.json', ['data/levels.experimental.json', 'application/json']],
 ]);
 const port = Number(process.env.PORT || 5173);
 const server = http.createServer(async (req, res) => {
