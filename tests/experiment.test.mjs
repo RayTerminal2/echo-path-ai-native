@@ -21,9 +21,9 @@ function replay(def, directions) {
   return {state, history};
 }
 
-test('experimental data contains five compact, valid levels', () => {
-  assert.equal(levels.length, 5);
-  assert.deepEqual(levels.map((level) => level.code), ['A', 'B', 'C', 'B1', 'B2']);
+test('experimental data contains six compact, valid levels', () => {
+  assert.equal(levels.length, 6);
+  assert.deepEqual(levels.map((level) => level.code), ['A', 'B', 'C', 'B1', 'B2', 'B1+']);
   assert.equal(fixtures.length, levels.length);
   for (const [index, level] of levels.entries()) {
     assert.ok(level.rows.length >= 5 && level.rows.length <= 7);
@@ -39,7 +39,7 @@ test('experimental data contains five compact, valid levels', () => {
   }
 });
 
-test('all five reference routes win on the actual game engine and support undo/restart', () => {
+test('all six reference routes win on the actual game engine and support undo/restart', () => {
   for (const [index, fixture] of fixtures.entries()) {
     const level = levels[index];
     const {state, history} = replay(level, fixture.directions);
@@ -130,6 +130,36 @@ test('B2: early arrow choices decide whether the same cell can still be used', (
   assert.deepEqual(effect.cell, [1, 4]);
   assert.equal(effect.got.length, 0);
   assert.ok(effect.minSteps >= 3);
+  assert.ok(effect.variants.some((variant) => variant.winnable === true));
+  assert.ok(effect.variants.some((variant) => variant.winnable === false));
+});
+
+test('B1+: two good first moves still require a correct second decision', () => {
+  const level = levels[5];
+  const board = parse(level);
+  const distance = new Map(board.gems.map((gem) => [gem, Math.abs(Math.floor(gem / board.W) - Math.floor(board.start / board.W)) + Math.abs(gem % board.W - board.start % board.W)]));
+  const nearest = Math.min(...distance.values());
+  const orders = permutations(board.gems);
+  const results = orders.map((order) => ({order, result: orderSolvable(level, order, {maxStates: 500_000})}));
+  for (const entry of results) assert.equal(entry.result.aborted, undefined);
+  const wins = results.filter((entry) => entry.result.ok).map((entry) => entry.order);
+  assert.equal(wins.length, 6);
+  const goodFirst = [...new Set(wins.map((order) => order[0]))].sort((a, b) => a - b);
+  assert.deepEqual(goodFirst, [5, 18]);
+  for (const gem of board.gems) {
+    if (distance.get(gem) === nearest) assert.equal(goodFirst.includes(gem), false);
+  }
+  for (const first of goodFirst) {
+    const remaining = board.gems.filter((gem) => gem !== first);
+    const goodSeconds = new Set(wins.filter((order) => order[0] === first).map((order) => order[1]));
+    assert.ok(goodSeconds.size >= 1);
+    assert.ok(goodSeconds.size < remaining.length, 'B1+ first move ' + first + ' does not constrain the second move');
+  }
+
+  const effect = findHistoryEffect(level, {maxDepth: 8});
+  assert.ok(effect, 'B1+ has no early arrow split');
+  assert.deepEqual(effect.cell, [1, 4]);
+  assert.equal(effect.got.length, 0);
   assert.ok(effect.variants.some((variant) => variant.winnable === true));
   assert.ok(effect.variants.some((variant) => variant.winnable === false));
 });

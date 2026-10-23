@@ -119,7 +119,53 @@
   - B1/B2 的求解证据充分，但“陷阱是否有吸引力”“预留退路是否易懂”需要人工试玩确认。
   - 取消移动提示可能提高首次理解成本，需要人工体验确认。
   - 布局验证仅覆盖 headless Chrome；未覆盖真实手机、iOS Safari、Firefox 或缩放组合。
-- **Commit ID**：待补充（本任务按要求未执行 commit/push，等待验收授权）。
+- **Commit ID**：`f766a8d feat: add gameplay experiments and UI refinements`
+
+---
+
+## DEV-004｜箭头可见性修复与 B1 进阶实验
+
+- **日期**：2026-10-23
+- **分支**：`dev/dev-002-gameplay-experiment`（未提交）
+- **基线**：`f766a8d feat: add gameplay experiments and UI refinements`；开工前工作树干净，已把 DEV-003 的 Commit ID 更新为 `f766a8d`。
+- **需求目标**：修复 PT-003 的“角色遮挡箭头”问题；新增基于「先远后近」的进阶关卡，要求至少两个有意义决策点。
+- **使用模型**：`learnings_campus/deepseek-v4.1-flash`（OpenCode）
+- **实现概要**：
+  1. `src/render.mjs` 在角色位于已写入箭头的格子时追加上层 `.player-arrow` 角标；`index.html` 增加角标样式，不恢复合法移动提示。
+  2. 新增实验 B1+「先远后近·进阶」：4 个收集物、6 条可通关收集顺序，最近收集物先拿全部失败；第一手与第二手均存在约束。
+  3. 扩展 `tests/experiment.test.mjs` 与 `tests/fixtures/verified-paths.experimental.json`，验证 B1+ 的顺序约束与早期箭头分叉。
+  4. 使用 `git archive f766a8d` 生成修复前基线截图，再对当前实现生成修复后截图；截图保存在 `docs/screenshots/`。
+- **修改文件（DEV-004 增量）**：
+  - `README.md`
+  - `index.html`（`.player-arrow` 样式、实验关卡 6 列）
+  - `src/render.mjs`（角色上层方向角标）
+  - `src/app.mjs`（实验模式文案更新为六关）
+  - `data/levels.experimental.json`（追加 B1+）
+  - `tests/fixtures/verified-paths.experimental.json`（追加 B1+ 参考路线）
+  - `tests/experiment.test.mjs`（六关与 B1+ 证据）
+  - `docs/development-log.md`（DEV-003 Commit ID 与本记录）
+  - `docs/DEV-004-REPORT.md`（新建）
+  - `docs/screenshots/dev-004-arrow-*.png`（新建）
+- **验证结果**：
+  - 已执行 `npm test`：**25 项通过，0 失败**；原有 24 项全部通过，新增 B1+ 测试通过。
+  - 已用临时 CDP 脚本在 headless Chrome 155 中检查 320/390/768/1100 四个视口，覆盖原九关与六关实验关卡；最大格子宽高差 0.015625 CSS px，无横向溢出。
+  - 已在浏览器实际回放六关实验路线与九关原版路线，验证移动、撤销、重开、切关、复制记录和统计隔离；`.cell.current .player-arrow` 存在且文本为当前格箭头方向。
+  - 已生成箭头修复前后截图；当前环境不支持模型直接识别图片内容，视觉结论以截图文件、DOM 断言和测量为准。
+  - **未运行** `python tests/browser_regression.py`：当前 Python 环境未安装 Playwright。
+  - 已记录 PT-004 单次真实试玩：B1+ 未经策略思考直接通关，且未重复进入任何格子；详见 `docs/playtest-log.md`。
+  - 已执行 B1/B1+ 机制审计：两关均存在无重复通关路线；移除箭头后最短步数不变（B1 8 步、B1+ 12 步），可通关收集顺序分别由 1→4、6→24；箭头规则对通关并非必要，B1+ 的技术顺序约束未转化为实际决策压力。详见 `docs/DEV-004-REPORT.md` 第 7 节。
+  - 角标可读性仍需更多人工确认；本次 PT-004 未提供该 UI 的明确反馈。
+- **遗留问题**：
+  - PT-004 表明 B1+ 的“两个决策点”未转化为可感知体验；未经 PM 批准不重设计。
+  - 方向角标是否干扰出口/收集物辨识需要人工确认。
+  - 布局验证未覆盖真实手机、iOS Safari、Firefox 或系统缩放。
+- **DEV-004-CLOSE 收尾（2026-10-23）**：
+  - 新增/更新 `docs/playtest-log.md`（PT-004）、`docs/DEV-004-REPORT.md`（第 7 节审计与收尾）、`docs/development-log.md`（本记录）。
+  - 未修改规则模块、关卡数据、箭头 UI 修复或既有实验成果。
+  - 已执行 `npm test`：**25 项通过，0 失败**。
+  - 已执行 `git diff --check`：无空白错误；仅有 LF→CRLF 提示。
+  - 未执行 Push 或 Merge；本地 Commit 等待批准。
+- **Commit ID**：待补充（已获批准后再执行本地 Commit）。
 
 ---
 

@@ -68,5 +68,19 @@
     ],
     "optimal": 10,
     "verifiedReplay": true
+  },
+  {
+    "code": "B1+",
+    "name": "先远后近·进阶",
+    "tag": "实验 B1+ · 两个决策点，先避开近处",
+    "rows": [
+      "#.S.E",
+      "★.#..",
+      "..★..",
+      "#.★★.",
+      "..#.."
+    ],
+    "optimal": 12,
+    "verifiedReplay": true
   }
 ]

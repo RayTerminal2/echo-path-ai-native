@@ -10,7 +10,7 @@ export function render({LEVELS,level,state,counts,historyLength,undos,mode='orig
   let content='';for(let p=0;p<b.W*b.H;p++){
    const wall=b.flat[p]==='#',cur=state.pos===p,gem=b.gems.includes(p)&&!state.got.includes(p),goal=b.end===p,stamped=Object.prototype.hasOwnProperty.call(state.stamps,p),go=legal.has(p);
    const cls=['cell',wall?'wall':'',cur?'current':''].filter(Boolean).join(' ');
-   let inner='';if(goal)inner+='<span class="goal"></span>';if(gem)inner+='<span class="star">◆</span>';if(stamped)inner+='<span class="arrow">'+DIRS[state.stamps[p]][2]+'</span>';if(b.start===p&&!cur)inner+='<span class="spawn">S</span>';if(cur)inner+='<span class="player">•</span>';
+   let inner='';if(goal)inner+='<span class="goal"></span>';if(gem)inner+='<span class="star">◆</span>';if(stamped)inner+='<span class="arrow">'+DIRS[state.stamps[p]][2]+'</span>';if(b.start===p&&!cur)inner+='<span class="spawn">S</span>';if(cur){inner+='<span class="player">•</span>';if(stamped)inner+='<span class="player-arrow" aria-hidden="true">'+DIRS[state.stamps[p]][2]+'</span>'}
    const label=wall?'障碍':cur?'角色位置':gem?'收集物':goal?'出口':'通行地面';content+='<div class="'+cls+'" data-pos="'+p+'" '+(go?'data-dir="'+legal.get(p)+'" tabindex="0" role="button"':'')+' aria-label="'+label+'">'+inner+'</div>';
   }const grid=$('board');grid.style.setProperty('--n',b.W);grid.style.setProperty('--h',b.H);grid.innerHTML=content;
 }

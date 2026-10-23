@@ -28,5 +28,11 @@
     "code": "B2",
     "expectedSteps": 10,
     "directions": [0, 1, 1, 0, 3, 3, 3, 3, 2, 2]
+  },
+  {
+    "level": 6,
+    "code": "B1+",
+    "expectedSteps": 12,
+    "directions": [3, 2, 3, 2, 1, 1, 2, 1, 0, 0, 0, 1]
   }
 ]
