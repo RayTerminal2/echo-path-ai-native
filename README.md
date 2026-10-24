@@ -1,6 +1,6 @@
 # 方向回声 | Echo Path — AI Native 玩法候选研究
 
-> 状态：**候选机制 / V1.0 公测定版**。PM 已批准公开测试发布；默认入口为 50 关正式战役，发布包 `dist/` 已构建并回归通过，等待人工上传部署。不是最终参赛作品。
+> 状态：**已结项归档（2026-10-24）**。V1.0 五章 50 关、步数挑战、自动化测试与静态发布包已完成；产品负责人判断核心玩法吸引力不足，已停止主动开发，不再新增关卡或发布功能。现有成果仅作历史保留，未部署、未 Push。最终复盘见 [`docs/PROJECT-RETROSPECTIVE.md`](docs/PROJECT-RETROSPECTIVE.md)。
 
 ## 运行
 
@@ -66,6 +66,7 @@ npm run build
 - `docs/DEV-007-HANDOFF.md`：DEV-007 会话交接记录（进度、修改文件、测试结果、遗留问题）。
 - `docs/screenshots/`：DEV-004 箭头修复前后对比截图。
 - `docs/DECISIONS.md`：真实反馈与产品决策。
+- `docs/PROJECT-RETROSPECTIVE.md`：最终结项复盘、失败原因与 AI 协作经验。
 - `docs/TEST_PLAN.md`：测试层次与证据边界。
 - `AGENTS.md`：Codex/OpenCode 的长效协作约束。
 

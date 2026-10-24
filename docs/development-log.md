@@ -210,7 +210,7 @@
   - E2 存在 `(1,4)` 等额外箭头陷阱，可能掩盖 `(3,3)` 的目标决策；后续关卡设计需借鉴并验证。
   - 8 个实验按钮在 320px 下较窄，视觉可读性与点击手感需人工验收；UI 人工验收尚未确认。
   - 布局验证仅覆盖 headless Chrome，未覆盖真实手机、iOS Safari、Firefox 或系统缩放。
-- **Commit ID**：待补充（本次归档 Commit 生成后见 Git 日志）。
+- **Commit ID**：`063bd21 DEV-005: archive gameplay experiments and product decision`（结项核对时确认）。
 
 ---
 
@@ -257,7 +257,7 @@
   - C2-02、C4-02、C5-02 均未经过真人试玩，不能宣称难度或趣味性已验证。
   - 浏览器 CDP 脚本未入库；后续需要可复现的 Playwright 或仓库内脚本。
   - 50 关的章节选择/分页 UI 未开发；当前 campaign 网格只适配首批 10 关。
-- **Commit ID**：待补充（本任务未提交；未获授权 Commit/Push/Merge）
+- **Commit ID**：`1b13d15 release: prepare Echo Path V1.0 public playtest`（结项核对时确认，与 DEV-007/DEV-008 同批提交）
 
 ---
 
@@ -282,7 +282,7 @@
   - **未运行** `python tests/browser_regression.py`：当前环境未安装 Playwright。
   - **未进行**新的真实玩家试玩；50 关难度递进与趣味性待统一人工验收。
 - **遗留问题**：见 `docs/DEV-007-HANDOFF.md`。
-- **Commit ID**：待补充（未获授权 Commit/Push/Merge）
+- **Commit ID**：`1b13d15 release: prepare Echo Path V1.0 public playtest`（结项核对时确认）
 
 ---
 
@@ -306,7 +306,7 @@
   - **未运行** `python tests/browser_regression.py`（无 Playwright）；**未进行**新的真实玩家试玩；未在真实手机浏览器/iOS Safari 验证；**未部署**。
 - **C1-07 / C3-04 复核结论**：仅地图外观接近（同 5×5、同起点、共一颗星，汉明 7），玩法维度完全不同（无墙开放双顺序教学题 vs 有墙唯一顺序陷阱题；星数、出口、墙、决策类型均不同），相隔 17 个关卡位次。**建议发布前不调整**，仅记录，未改动关卡。
 - **遗留问题**：浏览器自动请求 `/favicon.ico` 返回 404（页面不引用图标，良性）；公开分享建议链接 `/?mode=campaign`；是否改默认落地模式为产品决策，未擅自变更。
-- **Commit ID**：待补充（未获授权 Commit/Push/Merge）
+- **Commit ID**：`1b13d15 release: prepare Echo Path V1.0 public playtest`（结项核对时确认）
 
 ---
 
@@ -327,7 +327,48 @@
   - 已执行 `git diff --check`：无空白错误（仅 LF→CRLF 提示）。
   - 敏感复核：新增改动仅路由与文案，无凭据、无个人配置、无临时文件进入提交清单；`.env` 类文件不存在；`dist/`、生成临时 JSON 均在仓库外或被 `.gitignore` 排除。
   - **未运行** `python tests/browser_regression.py`（无 Playwright）；**未部署**。
-- **Commit ID**：见本节末尾提交记录（已获 PM 批准执行一次本地 Commit，未 Push/Merge）
+- **Commit ID**：`1b13d15 release: prepare Echo Path V1.0 public playtest`（结项核对时确认；已获 PM 批准执行本地 Commit，未 Push/Merge）
+
+---
+
+## ECHO-CLOSE｜最终结项归档
+
+- **日期**：2026-10-24
+- **分支 / 基线**：`dev/dev-002-gameplay-experiment`；开工前 HEAD `1b13d15 release: prepare Echo Path V1.0 public playtest`，工作树干净、无未跟踪文件。
+- **需求目标**：在停止主动开发的前提下完成最终结项：核实项目现状；记录真实产品复盘；同步产品决策与开发日志；执行测试、构建、空白与敏感信息检查；在全部通过后执行一次本地归档 Commit。不新增玩法、不改 UI/默认首页、不 Push/Merge/部署。
+- **使用模型**：`learnings_campus/deepseek-v4.1-flash`（OpenCode）
+- **现状核实（实际执行）**：
+  1. `git status`：工作树干净；`git status --porcelain --untracked-files=all` 无输出；`git stash list` 为空。
+  2. `git log --all --oneline --decorate`：当前分支仅本地；远程存在 `origin/main` 与 `origin/dev/dev-001-refactor`，本分支未 Push。
+  3. **DEV-006-B、DEV-007、DEV-008 均已提交**：三者与 DEV-008-RELEASE 一并包含在 `1b13d15`；本记录同时把此前“待补充”的 Commit ID 更正为该提交。
+  4. **DEV-008-RELEASE 已实际执行**：`src/app.mjs` 中 `CAMPAIGN=!EXPERIMENT&&!CLASSIC`，无 `mode` 参数默认进入 50 关；`dist/` 已存在（7 个运行时文件 + `manifest.json`，被 `.gitignore` 排除）。未部署。
+  5. 未执行 reset / clean / checkout / 覆盖；所有历史数据、实验记录和参考关卡保留。
+- **实现概要**：
+  1. 新建 `docs/PROJECT-RETROSPECTIVE.md`：记录项目目标、玩法假设、实验与真实反馈、50 关工程与测试、失败判断、核心失败原因、步数优化矛盾、AI 协作经验和最终决策；明确区分已验证结果、单人主观反馈与产品分析。
+  2. `docs/DECISIONS.md` 增加“2026-10-24 · 最终结项决策”：停止主动开发、归档保留、不 Push/Merge、转向新创意；并记录“35/50 关存在无重复通关路线、27/50 关参考最优路线零回访、24/50 关移除箭头后最优步数不变”的分析结论及其边界。
+  3. 本记录追加 ECHO-CLOSE；更正 DEV-005-B、DEV-006-B、DEV-007、DEV-008、DEV-008-RELEASE 的实际 Commit ID。
+  4. `README.md` 状态从“等待部署”更正为“已结项归档”，并增加复盘文档入口；未修改玩法、关卡数据、UI、默认首页或构建逻辑。
+- **复盘量化依据（使用现有真实规则模块只读重算）**：
+  - 50 关中 35 关的 `evidence.simplePath === true`，即存在不重复进入任何格子的通关路线；此类路线不受历史箭头约束。
+  - 逐关回放 `verified-paths.campaign.json`：27/50 关参考最优路线回访进入次数为 0，全部路线合计 62 次回访。
+  - 同一引擎在每步后清除 `stamps` 做完整 BFS：24/50 关最优步数不变，26 关下降（最大差值 10 步，C5-07 由 23 降至 13）；无 aborted。
+  - 以上是关卡结构分析，不是玩家行为统计。
+- **修改文件**：
+  - `docs/PROJECT-RETROSPECTIVE.md`（新建）
+  - `docs/DECISIONS.md`
+  - `docs/development-log.md`
+  - `README.md`
+- **验证结果（真实执行）**：
+  - `npm test`：**44 项通过 / 0 失败 / 0 跳过**，耗时约 23.9 秒；含 50 关逐关完整 BFS、参考路线回放与撤销/重开、实验关卡证据、求解器三态测试。
+  - `npm run build`：`dist ready: 7 files, secret scan clean.`；输出 7 个运行时文件，`manifest.json` 由构建脚本生成；`dist/` 仍被 `.gitignore` 排除。
+  - `git diff --check`：退出码 0；仅提示 `docs/DECISIONS.md` 将在下次 Git 操作时 LF→CRLF，无空白错误。
+  - 敏感信息扫描：排除 `.git/`、`dist/`、`node_modules/` 后扫描 API Key、私钥、Bearer、password/secret/token 与 `.env` 模式；唯一命中为 4 个文件的合法 `process.env` 配置读取（`PORT`、生成种子、临时目录），无凭据内容；仓库内无 `.env`、`.pem`、`.key`、`id_rsa` 或凭据文件。
+  - 未运行：`python tests/browser_regression.py`（环境无 Playwright）；未在真实手机/iOS Safari 验证；未做新的人工试玩；未部署。
+- **遗留问题**：
+  - 50 关未完成统一人工试玩验收，趣味性与难度曲线没有外部数据；结项决定基于产品负责人的主观体验。
+  - 临时 CDP 浏览器脚本未入库，历史浏览器证据无法一键重放。
+  - 当前分支未 Push；GitHub 备份需 PM 另行批准。
+- **Commit ID**：本次归档提交（提交信息 `archive: finalize Echo Path project and retrospective`）；结项报告给出实际哈希。未 Push/Merge/Force Push。
 
 ---
 
